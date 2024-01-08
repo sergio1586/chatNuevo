@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/estilo.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+    crossorigin="anonymous"></script>
+</head>
+<body class="inicio-chat">
+    <header class="container">
+        <h1 class="chat-title">Normas del Chat</h1>
+    </header>
+    <section class="container chat-rules">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="imagenes/logo.jpeg" class="img-fluid imagen">
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group rules-list">
+                    <li class="list-group-item"><strong>Respeto:</strong> Trata a los demás con cortesía y respeto. No toleramos lenguaje ofensivo, discriminación o acoso.</li>
+                    <li class="list-group-item"><strong>Contenido Apropiado:</strong> Evita publicar contenido inapropiado, violento o ilegal. Mantén el chat amigable y seguro para todos.</li>
+                    <li class="list-group-item"><strong>No Spam:</strong> Evita enviar mensajes repetitivos o publicar en exceso. El spam puede ser molesto para otros usuarios.</li>
+                    <li class="list-group-item"><strong>No Compartas Información Personal:</strong> No compartas información personal, como direcciones, números de teléfono o datos sensibles.</li>
+                    <li class="list-group-item"><strong>Temas Adecuados:</strong> Mantén las conversaciones en torno a temas apropiados para todos los públicos. Evita discusiones ofensivas o polémicas.</li>
+                    <li class="list-group-item"><strong>Colabora con el Moderador:</strong> Sigue las indicaciones del moderador y ayuda a mantener un ambiente agradable en el chat.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="container connection-form">
+        <h2>Formulario de Conexión</h2>
+        <form action="/conectar" method="post" id="conexionForm" class="row g-3">
+            <div class="col-md-6">
+                <label for="username" class="form-label">Nombre de Usuario:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Conectar" class="btn btn-primary">
+            </div>
+        </form>
+    </section>
+</body>
+</html>
