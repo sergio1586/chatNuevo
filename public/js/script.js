@@ -71,6 +71,13 @@ $(document).ready(() => {
         socket.emit('privado', { username, mensaje, usuarioElegido });//envia lo anterio como evento privado al servidor
         $('#inputMensaje').val('');
     };
+    //para que cuando se pulse enter se mande publico
+    $('#inputMensaje').on('keyup', function(event) {
+        if (event.key === 'Enter') {
+            // Si la tecla es "Enter", llamar a la función enviarPublico
+            enviarPublico();
+        }
+    });
     //funcion que comprueba si una palabra esta en uns cadena
     function contienePalabra(cadena, palabras) {
         var cadenaMinus=cadena.toLowerCase();//ponemos la cadena a minuscula todo
