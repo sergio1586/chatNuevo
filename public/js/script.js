@@ -104,7 +104,8 @@ $(document).ready(() => {
         'babosa',
         'maricón',
         'marica',
-        'capullo'
+        'capullo',
+        'estupido'
         // Agrega más palabras según tus necesidades
     ];
     function obtenerNombreURL(nombre){
