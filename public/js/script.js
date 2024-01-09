@@ -17,7 +17,7 @@ $(document).ready(() => {
     socket.on('listaUsuarios', function (usuarios) {
         $('#listaUsuarios').empty();//elimina lo anterior del DOM antes de añadir
         usuarios.forEach(usuario => {//recorre toda la coleccion y agrega a ala lista el nombre
-            $('#listaUsuarios').append(`<p>${usuario.nombreUsuario}</p>`);
+            $('#listaUsuarios').append(`<p>${usuario.nombreUsuario}</p>`).addClass('display-6');
         });
     
         $('#usuarioSelecionado').empty();
@@ -47,7 +47,7 @@ $(document).ready(() => {
         }else{//si las palabras no son bloqueadas muestra el mensaje publico inidcando el nombre
             var privado=$(`<p><strong>Privado (${data.emisor}):</strong> ${data.mensaje}</p>`);//guardo en una variable y le aplico css
             privado.css({
-                'background-color':'#194CB9',
+                'background-color':'#669900',
                 'color':'#FFFFFF',
                 'padding':'5px'
             });

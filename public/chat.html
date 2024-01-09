@@ -17,22 +17,26 @@
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
     crossorigin="anonymous"></script>
 </head>
-<body class="chat">
-    <aside id="sidebar" class="container sidebar">
-        <select id="usuarioSelecionado" class="form-select user-selector" disabled>
-            <!-- Opciones se añadirán dinámicamente aquí -->
-        </select>
-        <div id="listaUsuarios" class="user-list"></div>
-    </aside>
-    
-    <section id="main" class="container main">
-        <div id="mensajes" class="message-container"></div>
-        <div id="input-container" class="input-container">
-            <input type="text" id="inputMensaje" class="form-control message-input" placeholder="Escribe tu mensaje">
-            <button id="enviarPublico" onclick="enviarPublico()" class="btn btn-primary public-button">Publico</button>
-            <button id="enviarPrivado" onclick="enviarPrivado()" class="btn btn-secondary private-button">Privado</button>
-        </div>
-    </section>
-</body>
+<div class="container-fluid">
+    <div class="row">
+        <aside id="sidebar" class="col-md-3 sidebar">
+            <h5 class="text-primary">Para enviar privado elija destino</h5>
+            <select id="usuarioSelecionado" class="form-select user-selector" disabled>
+                <!-- Opciones se añadirán dinámicamente aquí -->
+            </select>
+            <h5 class="text-success">Usuarios conectados</h5>
+            <div id="listaUsuarios" class="user-list"></div>
+        </aside>
+
+        <section id="main" class="col-md-9 main">
+            <div id="mensajes" class="message-container"></div>
+            <div id="input-container" class="input-container">
+                <input type="text" id="inputMensaje" class="form-control message-input" placeholder="Escribe tu mensaje">
+                <button id="enviarPublico" onclick="enviarPublico()" class="btn btn-primary public-button">Publico</button>
+                <button id="enviarPrivado" onclick="enviarPrivado()" class="btn btn-success private-button">Privado</button>
+            </div>
+        </section>
+    </div>
+</div>
 
 </html>

@@ -18,10 +18,10 @@
     </header>
     <section class="container chat-rules">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mx-auto text-center">
                 <img src="imagenes/logo.jpeg" class="img-fluid imagen" alt="imagen de logo de chat de sergio">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <ul class="list-group rules-list">
                     <li class="list-group-item"><strong>Respeto:</strong> Trata a los demás con cortesía y respeto. No toleramos lenguaje ofensivo, discriminación o acoso.</li>
                     <li class="list-group-item"><strong>Contenido Apropiado:</strong> Evita publicar contenido inapropiado, violento o ilegal. Mantén el chat amigable y seguro para todos.</li>
@@ -34,14 +34,14 @@
         </div>
     </section>
 
-    <section class="container connection-form">
+    <section class="container connection-form d-flex align-items-center justify-content-center flex-column">
         <h2>Formulario de Conexión</h2>
         <form action="/conectar" method="post" id="conexionForm" class="row g-3">
             <div class="col-md-6">
                 <label for="username" class="form-label">Nombre de Usuario:</label>
-                <input type="text" id="username" name="username" class="form-control" required>
+                <input type="text" id="username" name="username" class="form-control" required="">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
                 <input type="submit" value="Conectar" class="btn btn-primary">
             </div>
         </form>

@@ -68,8 +68,13 @@ socket.on('privado',function(data){
             };
             socket tiene un campo id que contiene la clave
         */
-        io.to(socketDestino.id).emit('privado',{emisor,mensaje:data.mensaje});
-        io.to(idPersona).emit('privado',{emisor,mensaje:data.mensaje});
+        if(socketDestino.id===idPersona){
+            io.to(idPersona).emit('privado',{emisor,mensaje:'Te has mandado el mensaje a ti mismo, selecciona otro usuario'});
+        }else{
+            io.to(socketDestino.id).emit('privado',{emisor,mensaje:data.mensaje});
+            io.to(idPersona).emit('privado',{emisor,mensaje:data.mensaje});
+        }
+        
     }
 });
 socket.on('disconnect',function(){
