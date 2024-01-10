@@ -78,9 +78,22 @@ $(document).ready(() => {
             enviarPublico();
         }
     });
-    window.descargar=()=>{
-        socket.emit('descargarConversacion',{username});
-    }
+    // En el cliente
+socket.on('descarga', function(data) {
+    const { url } = data;
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'conversacion.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+// Función en el cliente para iniciar la descarga desde la interfaz
+window.descargar = () => {
+    socket.emit('descargarConversacion', { username });
+};
+
     //funcion que comprueba si una palabra esta en uns cadena
     function contienePalabra(cadena, palabras) {
         var cadenaMinus=cadena.toLowerCase();//ponemos la cadena a minuscula todo

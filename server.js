@@ -4,6 +4,7 @@ const fs=require('fs');
 const app=express();
 const server =require('http').Server(app);
 const io=require('socket.io')(server);
+const path = require('path');
 
 const {conectarDB,Conversacion,Usuario}=require('./mongo');
 const PDFDocument = require('pdfkit');
@@ -129,6 +130,17 @@ socket.on('privado',function(data){
         
     }
 });
+// En el servidor
+app.get('/descargarPDF', (req, res) => {
+    const filePath = path.join(__dirname, 'conversacion.pdf');
+    res.download(filePath, 'conversacion.pdf', (err) => {
+        if (err) {
+            console.error('Error al descargar el archivo:', err);
+            res.status(500).send('Error al descargar el archivo');
+        }
+    });
+});
+
 socket.on('descargarConversacion', async (data) => {
     try {
         const conversacion = await Conversacion.find().lean();
@@ -143,7 +155,7 @@ socket.on('descargarConversacion', async (data) => {
 
             // Asumiendo que hay tantos usuarios como mensajes
             for (let i = 0; i < mensajes.length; i++) {
-                const usuario = usuarios[i] || {}; // Si no hay usuario, usar objeto vacío
+                const usuario = usuarios[i] || {};
                 const mensaje = mensajes[i] || {};
 
                 const nombreUsuario = usuario.nombre || 'Sin nombre';
@@ -157,10 +169,12 @@ socket.on('descargarConversacion', async (data) => {
 
         docPdf.end();
         console.log('Conversacion guardada en PDF');
+        socket.emit('descarga', { url: '/descargarPDF' }); // Envía la URL al cliente
     } catch (error) {
         console.error('Error al descargar PDF', error);
     }
 });
+
 
 
 
