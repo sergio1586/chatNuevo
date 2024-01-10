@@ -78,6 +78,9 @@ $(document).ready(() => {
             enviarPublico();
         }
     });
+    window.descargar=()=>{
+        socket.emit('descargarConversacion',{username});
+    }
     //funcion que comprueba si una palabra esta en uns cadena
     function contienePalabra(cadena, palabras) {
         var cadenaMinus=cadena.toLowerCase();//ponemos la cadena a minuscula todo

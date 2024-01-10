@@ -4,10 +4,15 @@ const fs=require('fs');
 const app=express();
 const server =require('http').Server(app);
 const io=require('socket.io')(server);
+
+const {conectarDB,Conversacion,Usuario}=require('./mongo');
+const PDFDocument = require('pdfkit');
 const port=process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+
+
 
 app.get('/',(req,res)=>{
     var contenido=fs.readFileSync('public/index.html');
@@ -26,13 +31,39 @@ app.get('/chat',(req,res)=>{
         res.send('Ponga nombre');
     }
 })
-app.post('/conectar',(req,res)=>{
-    const username=req.body.username;
-    if(username){
-        const redirectUrl = `/chat?username=${encodeURIComponent(username)}`;
-        res.redirect(redirectUrl);
-    }else{
-        res.send('Ponga nombre');
+app.post('/registro',async(req,res)=>{
+    const {nombre,password}=req.body;
+
+    try{
+        //verifica si ya existe usuario
+        const usuarioExistente = await Usuario.findOne({nombre}).exec();
+        if(usuarioExistente){
+            return res.status(400).json({mensaje:'El nombre de usuario ya existe'});
+        }
+        const nuevoUsuario= new Usuario({nombre,password});
+        await nuevoUsuario.save();
+        //res.status(201).json({mensaje:'Usuario registrado exitosamente'});
+
+        res.redirect(`/`);
+        
+    }catch(error){
+        console.error('Error al registrar usuario:',error);
+        res.status(500).json({mensaje:'Error del servidor'});
+    }
+})
+app.post('/conectar',async(req,res)=>{
+    const {nombre,password}=req.body;
+    try{
+        //mira si el usuario para entrar
+        const usuarioEncontrado=await Usuario.findOne({nombre,password}).exec();
+        if(usuarioEncontrado){
+            res.redirect(`/chat?username=${req.body.nombre}`);
+        }else{
+            return res.status(400).json({mensaje:'Usuario no registrado o contraseña erronea'});
+        }
+    }catch(error){
+        console.error('Error al leer usuario:',error);
+        res.status(500).json({mensaje:'Error del servidor'});
     }
 })
 const usuarios={};
@@ -50,11 +81,32 @@ socket.on('usuarioElegido',function(data){
     usuarios[idPersona].username=data;
     enviarListaUsuarios();
 });
-socket.on('mensajePublico',function(data){
-    const nombre=data.nombre;
-    const mensaje=data.mensaje;
-    io.emit('mensajePublico',{nombre,mensaje});
+socket.on('mensajePublico', async function (data) {
+    const nombre = data.nombre;
+    const mensaje = data.mensaje;
+    try {
+        let conversacion = await Conversacion.findOne().exec();
+        if (!conversacion) {
+            conversacion = new Conversacion({
+                usuarios: [], // Cambiado a un array en lugar de objeto
+                mensajes: []
+            });
+        }
+        conversacion.usuarios.push({
+            nombre: nombre
+        });
+        conversacion.mensajes.push({
+            contenido: mensaje,
+            fecha: new Date()
+        });
+        await conversacion.save();
+        console.log('Mensaje guardado en Mongo', mensaje);
+    } catch (error) {
+        console.error('Error al guardar el mensaje', error);
+    }
+    io.emit('mensajePublico', { nombre, mensaje });
 });
+
 socket.on('privado',function(data){
     const usuarioElegido=data.usuarioElegido;
     let emisor=data.username;
@@ -77,10 +129,48 @@ socket.on('privado',function(data){
         
     }
 });
+socket.on('descargarConversacion', async (data) => {
+    try {
+        const conversacion = await Conversacion.find().lean();
+
+        const pdfStream = fs.createWriteStream('conversacion.pdf');
+        const docPdf = new PDFDocument();
+        docPdf.pipe(pdfStream);
+
+        for (const conversacionItem of conversacion) {
+            const usuarios = conversacionItem.usuarios || [];
+            const mensajes = conversacionItem.mensajes || [];
+
+            // Asumiendo que hay tantos usuarios como mensajes
+            for (let i = 0; i < mensajes.length; i++) {
+                const usuario = usuarios[i] || {}; // Si no hay usuario, usar objeto vacío
+                const mensaje = mensajes[i] || {};
+
+                const nombreUsuario = usuario.nombre || 'Sin nombre';
+                const contenidoMensaje = mensaje.contenido || 'Mensaje Vacío';
+                const fechaMensaje = mensaje.fecha || 'Fecha vacía';
+
+                const mensajeTexto = `${nombreUsuario}: ${contenidoMensaje}, ${fechaMensaje} \n`;
+                docPdf.text(mensajeTexto);
+            }
+        }
+
+        docPdf.end();
+        console.log('Conversacion guardada en PDF');
+    } catch (error) {
+        console.error('Error al descargar PDF', error);
+    }
+});
+
+
+
 socket.on('disconnect',function(){
     console.log('Usuario desconectado');
     delete usuarios[idPersona];//se borra la posicion del array cuando el usuario se va
     enviarListaUsuarios();//se actualiza la lista sin el usuario
+    if(Object.keys(usuarios).length===0){
+        borrarConversacionMongo();
+    }
 });
 
 
@@ -101,6 +191,16 @@ function enviarListaUsuarios() {
 
 
 });
+conectarDB();
+async function borrarConversacionMongo() {
+    try {
+        // Elimina todas las conversaciones
+        await Conversacion.deleteMany();
+        console.log('Conversación eliminada de MongoDB');
+    } catch (error) {
+        console.error('Error al eliminar conversación de MongoDB', error);
+    }
+}
 server.listen(port, () => {
     console.log(`App escuchando en el puerto ${port}`);
     });
