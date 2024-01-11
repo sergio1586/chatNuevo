@@ -44,7 +44,10 @@ app.post('/registro',async(req,res)=>{
         //verifica si ya existe usuario
         const usuarioExistente = await Usuario.findOne({nombre}).exec();
         if(usuarioExistente){
-            return res.status(400).json({mensaje:'El nombre de usuario ya existe'});
+            //return res.status(400).json({mensaje:'El nombre de usuario ya existe'});
+            const mensajeError='Nombre de usuario ya registrado';
+            const script =`<script>alert('${mensajeError}');window.location.href='/irRegistro';</script>`;//enseña el error
+            return res.send(script);
         }
         const nuevoUsuario= new Usuario({nombre,password});
         await nuevoUsuario.save();
@@ -65,7 +68,9 @@ app.post('/conectar',async(req,res)=>{//esta peticion la llama en html
         if(usuarioEncontrado){
             res.redirect(`/chat?username=${req.body.nombre}`);//manda a /chat con el nombre de usuario
         }else{
-            return res.status(400).json({mensaje:'Usuario no registrado o contraseña erronea'});
+            const mensajeError='Usuario no registrado o contraseña incorrecta';
+            const script =`<script>alert('${mensajeError}');window.location.href='/';</script>`;//enseña el error
+            res.send(script);
         }
     }catch(error){
         console.error('Error al leer usuario:',error);
