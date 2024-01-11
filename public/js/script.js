@@ -3,7 +3,7 @@ $(document).ready(() => {
     que crea una isntancia de conexion con el servidor.
     servidor y cliente usan mismo dominio y puerto*/
     let username=obtenerNombreURL('username');//va a llevar el nombre del usuario
-
+    
         if(username){
             socket.emit('usuarioElegido',username);/*emite el evento con el usuario y 
             lo asocia al campo de usuarioElegido de la coleccion de datos*/
@@ -37,6 +37,8 @@ $(document).ready(() => {
             $('#mensajes').append(`<p><strong>${data.nombre}:</strong> ${data.mensaje}</p>`);
         }
         
+        mostrarEtiqueta();
+        
     });
 //recibe el emit del servidor cuando es privado pone el nombre del remite y el mensaje en el DOM
     socket.on('privado', function (data) {
@@ -62,6 +64,8 @@ $(document).ready(() => {
         const nombre=username;//coge el nombre de quien lo manda
         socket.emit('mensajePublico',{mensaje,nombre});//emite el mensaje publico
         $('#inputMensaje').val('');//limpia el inputMensaje
+        
+
     };
 //se lanza con el boton privado
     window.enviarPrivado = () => {
@@ -73,14 +77,18 @@ $(document).ready(() => {
     };
     //para que cuando se pulse enter se mande publico
     $('#inputMensaje').on('keyup', function(event) {
-        if (event.key === 'Enter') {
-            // Si la tecla es "Enter", llamar a la función enviarPublico
+        if (event.key === 'Enter'&& !event.shiftKey) {
+            // Si la tecla es solo "Enter", llamar a la función enviarPublico
             enviarPublico();
+            event.preventDefault();
+        }else if(event.key === 'Enter'&& event.shiftKey){// si la tecla es una convinacion de de Enter+shift se manda privado
+            enviarPrivado();
+            event.preventDefault();
         }
     });
     // En el cliente
 socket.on('descarga', function(data) {
-    const { url } = data;
+    const { url } = data;//recoge la url que estara en /descargaPDF
     const link = document.createElement('a');
     link.href = url;
     link.download = 'conversacion.pdf';
@@ -134,6 +142,21 @@ window.descargar = () => {
     function obtenerNombreURL(nombre){
         const urlParams=new URLSearchParams(window.location.search);
         return urlParams.get(nombre);
+    }
+    function saberNumeroHijos(etiqueta) {
+        let numeroHijos = etiqueta.children('p').length;//con esto averiguamos el numero de p de la etiqueta
+        return numeroHijos;
+    }
+    function mostrarEtiqueta() {
+        const divMensajes = $('#mensajes');
+        const botonDescargar = $('#descargar');
+    
+        if (saberNumeroHijos(divMensajes) !== 0) {//en cuanto se agrege un elemento p se llama a la funcion
+            botonDescargar.prop('hidden',false);
+        } else {
+            console.log('Ocultando botón de descarga');
+            
+        }
     }
 
 });
