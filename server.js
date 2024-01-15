@@ -37,29 +37,32 @@ app.get('/chat',(req,res)=>{//cuando /conectar comprueba que existe el usuario l
         res.send('Ponga nombre');
     }
 })
-app.post('/registro',async(req,res)=>{
-    const {nombre,password}=req.body;
+app.post('/registro', async (req, res) => {
+    const { nombre, password } = req.body;
 
-    try{
-        //verifica si ya existe usuario
-        const usuarioExistente = await Usuario.findOne({nombre}).exec();
-        if(usuarioExistente){
-            //return res.status(400).json({mensaje:'El nombre de usuario ya existe'});
-            const mensajeError='Nombre de usuario ya registrado';
-            const script =`<script>alert('${mensajeError}');window.location.href='/irRegistro';</script>`;//enseña el error
+    try {
+        // Verifica si ya existe el usuario
+        const usuarioExistente = await Usuario.findOne({ nombre }).exec();
+        if (usuarioExistente) {
+            const mensajeError = 'Nombre de usuario ya registrado';
+            const script = `<script>alert('${mensajeError}');window.location.href='/irRegistro';</script>`;
             return res.send(script);
         }
-        const nuevoUsuario= new Usuario({nombre,password});
-        await nuevoUsuario.save();
-        //res.status(201).json({mensaje:'Usuario registrado exitosamente'});
 
-        res.redirect(`/`);
-        
-    }catch(error){
-        console.error('Error al registrar usuario:',error);
-        res.status(500).json({mensaje:'Error del servidor'});
+        const nuevoUsuario = new Usuario({ nombre, password });
+        await nuevoUsuario.save();
+
+        // Usuario registrado exitosamente
+        const mensajeExito = 'Usuario registrado exitosamente';
+        const scriptExito = `<script>alert('${mensajeExito}');window.location.href='/';</script>`;
+        return res.send(scriptExito);
+
+    } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        res.status(500).json({ mensaje: 'Error del servidor' });
     }
-})
+});
+
 app.post('/conectar',async(req,res)=>{//esta peticion la llama en html
     const {nombre,password}=req.body;
     try{
