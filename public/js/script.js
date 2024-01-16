@@ -32,9 +32,11 @@ $(document).ready(() => {
             var mensajebloqueo = $("<p><strong>Mensaje bloqueado por inclumplir normas</strong></p>");
             mensajebloqueo.css('color','red');
             $('#mensajes').append(mensajebloqueo);
+            scrool();
 
         }else{//si las palabras no son bloqueadas muestra el mensaje publico inidcando el nombre
             $('#mensajes').append(`<p><strong>${data.nombre}:</strong> ${data.mensaje}</p>`);
+            scrool();
         }
         
         mostrarEtiqueta();
@@ -46,6 +48,7 @@ $(document).ready(() => {
             var mensajebloqueo = $("<p><strong>Mensaje bloqueado por inclumplir normas</strong></p>");
             mensajebloqueo.css('color','red');
             $('#mensajes').append(mensajebloqueo);
+            scrool();
         }else{//si las palabras no son bloqueadas muestra el mensaje publico inidcando el nombre
             var privado=$(`<p><strong>Privado (${data.emisor}):</strong> ${data.mensaje}</p>`);//guardo en una variable y le aplico css
             privado.css({
@@ -54,7 +57,7 @@ $(document).ready(() => {
                 'padding':'5px'
             });
             $('#mensajes').append(privado);//añado a mensajes
-            
+            scrool();
         } 
     });
     
@@ -158,5 +161,8 @@ window.descargar = () => {
             
         }
     }
-
+    //mantiene en vision el ultimo mensaje mandado
+    function scrool(){
+        $('#mensajes').scrollTop($('#mensajes')[0].scrollHeight);
+    }
 });
