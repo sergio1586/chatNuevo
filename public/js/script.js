@@ -60,7 +60,6 @@ $(document).ready(() => {
             scrool();
         } 
     });
-    
 //la funcion se lanza con el boton que lo llama desde el html
     window.enviarPublico=()=>{
         const mensaje=$('#inputMensaje').val();//coge el valor del input
